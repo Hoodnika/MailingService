@@ -1,0 +1,190 @@
+{% extends 'mainapp/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<div class="d-flex gap-5 justify-content-center" id="dropdownMacos">
+    {% if body_list|length == 0 %}
+    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-macos mx-0 border-0 shadow" style="width: 280px;">
+        <li><a class="dropdown-item">Здесь будут ваши письма</a></li>
+        <li><a class="dropdown-item">*тема письма*</a></li>
+        <li><a class="dropdown-item">*дата создания*</a></li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item" href="#">*Посмотреть подробнее*</a></li>
+    </ul>
+    {% endif %}
+    {% for object in body_list %}
+    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-macos mx-0 border-0 shadow" style="width: 220px;">
+        <a class="dropdown-item active">{{ object.topic_mail }}</a>
+        <a class="dropdown-item">{{ object.created_at }}</a>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% if user|has_group:"Manager" %}
+        <a class="dropdown-item">{{ object.owner }}</a>
+        {% endif %}
+        <li><a class="dropdown-item" href="{% url 'mainapp:message_detail' pk=object.pk %}">Посмотреть подробнее</a>
+        </li>
+    </ul>
+    {% endfor %}
+    <div class="dropdown-menu dropdown-menu-dark border-0 pt-0 mx-0 rounded-3 shadow overflow-hidden"
+         style="width: 220px; right: 10px; position: absolute;"
+        <ul class="list-unstyled mb-0">
+            <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'mainapp:message_create' %}">
+                <span class="d-inline-block bg-success rounded-circle" style="width: .5em; height: .5em;"></span>
+                Новое письмо
+            </a></li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'mainapp:message_list' %}">
+                <span class="d-inline-block bg-primary rounded-circle" style="width: .5em; height: .5em;"></span>
+                Все письма
+            </a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="b-example-divider"></div>
+
+<div class="d-flex gap-5 justify-content-center" id="dropdownFilter">
+    {{ if  }}
+    {% if settings_list|length == 0 %}
+    <div class="dropdown-menu dropdown-menu-dark border-0 pt-0 mx-0 rounded-3 shadow overflow-hidden"
+         style="width: 280px; height: 250px; display: flex; align-items: center; justify-content: center;">
+        {% if body_list|length == 0 and client_list|length == 0 %}
+        <button class="btn btn-primary"
+                onclick="window.location.href='{% url 'mainapp:message_create' %}?next={% url 'clientapp:client_create' %}?next={% url 'mainapp:setting_create' %}';"
+                style="min-width: 200px; min-height: 110px;">
+            НАЧАТЬ
+        </button>
+        {% elif body_list|length == 0 %}
+        <button class="btn btn-primary"
+                onclick="window.location.href='{% url 'mainapp:message_create' %}?next={% url 'mainapp:setting_create' %}';"
+                style="min-width: 200px; min-height: 110px;">
+            НАЧАТЬ
+        </button>
+        {% elif client_list|length == 0 %}
+        <button class="btn btn-primary"
+                onclick="window.location.href='{% url 'clientapp:client_create' %}?next={% url 'mainapp:setting_create' %}';"
+                style="min-width: 200px; min-height: 110px;">
+            НАЧАТЬ
+        </button>
+        {% else %}
+        <button class="btn btn-primary"
+                onclick="window.location.href='{% url 'mainapp:setting_create' %}';"
+                style="min-width: 200px; min-height: 110px;">
+            НАЧАТЬ
+        </button>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% for object in settings_list %}
+
+    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-macos mx-0 border-0 shadow" style="width: 280px;">
+        <li><a class="dropdown-item active">{{ object.message }}</a></li>
+        <li><a class="dropdown-item">{{ object.first_sending }} - {{ object.last_sending }}</a></li>
+        <li><a class="dropdown-item">{{ object.periodicity }}</a></li>
+        <li><a class="dropdown-item">{{ object.status }}</a></li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% if user|has_group:"Manager" %}
+        <a class="dropdown-item">{{ object.owner }}</a>
+        {% endif %}
+        {% if object.status != 'Рассылка завершена' %}
+        <li><a class="dropdown-item" href="{% url 'mainapp:setting_detail' pk=object.pk %}">Посмотреть подробнее</a>
+        </li>
+        {% endif %}
+        {% if object.status == 'Рассылка остановлена' %}
+        {% if user == object.owner %}
+        <li><a class="dropdown-item" href="{% url 'mainapp:activate_mailing' pk=object.pk %}">Активировать рассылку</a>
+        </li>
+        {% endif %}
+        {% elif object.status == 'Рассылка активна' %}
+        <li><a class="dropdown-item" href="{% url 'mainapp:deactivate_mailing' pk=object.pk %}">Отключить рассылку</a>
+        </li>
+        {% endif %}
+    </ul>
+    {% endfor %}
+    <div class="dropdown-menu dropdown-menu-dark border-0 pt-0 mx-0 rounded-3 shadow overflow-hidden"
+         style="width: 220px; right: 10px; position: absolute;">
+        <ul class="list-unstyled mb-0">
+            <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 "
+                   href="{% url 'mainapp:setting_create' %}">
+                <span class="d-inline-block bg-success rounded-circle" style="width: .5em; height: .5em;"></span>
+                Новая рассылка
+            </a></li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'mainapp:setting_list' %}">
+                <span class="d-inline-block bg-primary rounded-circle" style="width: .5em; height: .5em;"></span>
+                Все рассылки
+            </a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="b-example-divider"></div>
+
+<div class="d-flex gap-5 justify-content-center" id="dropdownIcons">
+    {% if report_list|length == 0 %}
+    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-macos mx-0 border-0 shadow" style="width: 280px;">
+        <li><a class="dropdown-item" >Здесь будет отчет по рассылке</a></li>
+        <li><a class="dropdown-item" >*рассылка*</a></li>
+        <li><a class="dropdown-item" >*дата*</a></li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item" href="#">*Посмотреть подробнее*</a></li>
+    </ul>
+    {% endif %}
+    {% for object in report_list %}
+    <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-macos mx-0 border-0 shadow" style="width: 280px;">
+        <li><a class="dropdown-item active">Отчет по рассылке</a></li>
+        <li><a class="dropdown-item" >{{ object.message }}</a></li>
+        <li><a class="dropdown-item" >{{ object.first_sending }} - {{ object.last_sending }}</a></li>
+        <li><a class="dropdown-item active">Время последней отправки</a></li>
+        <li><a class="dropdown-item" >{{ object.mailingreport_set.last.last_attempt_time }}</a></li>
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        {% if user|has_group:"Manager" %}
+        <a class="dropdown-item">{{ object.owner }}</a>
+        {% endif %}
+        <li><a class="dropdown-item" href="{% url 'mainapp:report' pk=object.pk %}">Подробнее</a></li>
+    </ul>
+    {% endfor %}
+
+    <div class="dropdown-menu dropdown-menu-dark border-0 pt-0 mx-0 rounded-3 shadow overflow-hidden"
+         style="width: 220px; right: 10px; position: absolute; ">
+        <ul class="list-unstyled mb-0">
+            <li><a class="dropdown-item d-flex align-items-center gap-2 py-2 " href="{% url 'mainapp:report_list' %}">
+                <span class="d-inline-block bg-success rounded-circle" style="width: .5em; height: .5em;"></span>
+                Все отчеты
+            </a></li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'clientapp:client_list' %}">
+                <span class="d-inline-block bg-info rounded-circle" style="width: .5em; height: .5em;"></span>
+                Все клиенты
+            </a></li>
+            {% if user|has_group:"Manager" %}
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{% url 'clientapp:user_list' %}">
+                <span class="d-inline-block bg-primary rounded-circle" style="width: .5em; height: .5em;"></span>
+                Все пользователи
+            </a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+<div class="b-example-divider"></div>
+
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'mainapp/base.html'%}
+{% load my_tags %}
+{% block content %}
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Мои рассылки</h1>
+        </div>
+        <link>
+        <a type="button" class="btn btn-sm btn-secondary"
+           href="{% url 'mainapp:setting_create' %}">Создать новую рассылку
+        </a>
+    </div>
+</section>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    {% for object in object_list %}
+    {% if user == object.owner or user|has_group:"Manager" %}
+    <div class="col">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h2 class="card-text">Письмо к отправке '{{ object.message}}'</h2>
+                <h4 class="card-text">Статус рассылки - {{ object.status }}</h4>
+                <h4 class="card-text">{{ object.first_sending }} - {{ object.last_sending }}</h4>
+                <div class="d-flex justify-content-between align-items-center сol-">
+                    <div class="btn-group сol-4">
+                        {% if object.status != 'Рассылка завершена' %}
+                        <a type="button" class="btn btn-sm btn-outline-secondary col-6"
+                           href="{% url 'mainapp:setting_detail' pk=object.pk %} ">Смотреть подробнее
+                        </a>
+                        {% endif %}
+                    </div>
+                    <div class="btn-group сol-4">
+                        {% if object.status == 'Рассылка остановлена' %}
+                        {% if user == object.owner %}
+                        <a type="button" class="btn btn-sm btn-outline-success col-6" href="{% url 'mainapp:activate_mailing' pk=object.pk %}">Активировать
+                            рассылку</a>
+                        {% endif %}
+                        {% elif object.status == 'Рассылка активна' %}
+                        <a type="button" class="btn btn-sm btn-outline-danger col-6" href="{% url 'mainapp:deactivate_mailing' pk=object.pk %}">Отключить
+                            рассылку</a>
+                        {% endif %}
+                    </div>
+                    <div class="btn-group сol-4">
+                        {% if user == object.owner %}
+                        <a type="button" class="btn btn-sm btn-outline-danger col-6"
+                           href="{% url 'mainapp:setting_delete' pk=object.pk %} ">Удалить рассылку
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'mainapp/base.html'%}
+{% load my_tags %}
+{% block content %}
+<div class="row g-3 justify-content-center lenght" style="padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="btn-group col-4" style="width: 220px; right: 10px; position: absolute;">
+        <a type="button" class="btn btn-sm btn-outline-secondary"
+           href="{% url 'mainapp:message_list' %}">Мои письма</a>
+    </div>
+    <div class="col-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Тема письма - {{ object.topic_mail }}</h4>
+                <br>
+                <h5 class="card-text">{{ object.body_mail }}</h5>
+                <br>
+                <h5 class="card-text">Дата создания - {{ object.created_at }}</h5>
+                {% if user == object.owner %}
+                <div class="d-flex align-items-center">
+                    <div class="btn-group col-6">
+                        <a type="button" class="btn btn-sm btn-outline-secondary"
+                           href="{% url 'mainapp:message_update' pk=object.pk %} ">Редактировать
+                        </a>
+                    </div>
+                    <div class="btn-group col-6">
+                        <a type="button"
+                           class="btn btn-sm btn-outline-danger"
+                           href="{% url 'mainapp:message_delete' pk=object.pk %}">Удалить письмо</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">{{ object.title }}</h1>
+            <br>
+            <h3 class="fw-light">{{ object.content }}</h3>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

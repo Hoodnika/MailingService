@@ -1,0 +1,42 @@
+{% extends 'mainapp/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-12 py-4">
+            <form class="row" method="post" enctype="multipart/form-data">
+                <div class="col-6">
+                    {% if object %}
+                    <div class="card-header form-control text-center"><h3>Редактирование</h3></div>
+                    {% else %}
+                    <div class="card-header form-control text-center"><h3>Создание статьи</h3></div>
+                    {% endif %}
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            {% if object %}
+                            Сохранить
+                            {% else %}
+                            Создать
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+                {% if object %}
+                <div class="col-6">
+                    <div class="card-header form-control text-center"><h3>Комментарии</h3></div>
+                    <div class="card-body shadow-sm">
+                        {{ formset.management_form }}
+                        {% for form in formset.forms %}
+                        {{ form.as_p }}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

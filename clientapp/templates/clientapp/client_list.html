@@ -1,0 +1,43 @@
+{% extends 'mainapp/base.html'%}
+{% load my_tags %}
+{% block content %}
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Мои клиенты</h1>
+        </div>
+        <link>
+        <a type="button" class="btn btn-sm btn-secondary"
+           href="{% url 'clientapp:client_create' %}">Создать клиента
+        </a>
+    </div>
+</section>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    {% for object in object_list %}
+    {% if user == object.owner or user|has_group:"Manager" %}
+    <div class="col">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h2 class="card-text">{{ object.email}}</h2>
+                <div class="d-flex justify-content-between align-items-center сol-">
+                    <div class="btn-group сol-6">
+                        <a type="button" class="btn btn-sm btn-outline-secondary col-6"
+                           href="{% url 'clientapp:client_detail' pk=object.pk %} ">Смотреть подробнее
+                        </a>
+                    </div>
+                    <div class="btn-group сol-6">
+                        {% if user == object.owner %}
+                        <a type="button" class="btn btn-sm btn-outline-danger col-6"
+                           href="{% url 'clientapp:client_delete' pk=object.pk %} ">Удалить клиента
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

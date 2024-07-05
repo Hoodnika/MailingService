@@ -1,0 +1,45 @@
+{% extends 'mainapp/base.html'%}
+{% load my_tags %}
+{% block content %}
+<div class="btn-group col-4" style="width: 220px; right: 10px; position: absolute;">
+        <a type="button" class="btn btn-sm btn-outline-secondary"
+           href="{% url 'blogapp:blog_list' %}">Мои статьи</a>
+    </div>
+{% if user == object.owner %}
+<div class="row g-3 justify-content-center lenght">
+    <div class="col-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ object.title }}</h5>
+                <p class="card-text">Статью просмотрели {{ object.view_count }} раз</p>
+                <div class="d-flex align-items-center">
+                    <div class="btn-group col-6">
+                        <a type="button" class="btn btn-sm btn-outline-secondary"
+                           href="{% url 'blogapp:blog_update' slug=object.slug %} ">Редактировать
+                        </a>
+                    </div>
+                    <div class="btn-group col-6">
+                        <a type="button"
+                           class="btn btn-sm btn-outline-secondary "
+                           href="{% url 'blogapp:blog_delete' slug=object.slug %}">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<section class="py-5 text-center container">
+    <div class="row py-lg-5">
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">{{ object.title }}</h1>
+            <br>
+            <h3 class="fw-light">{{ object.content }}</h3>
+        </div>
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <img src="{{ object.image | media_filter }}" class="img-fluid">
+        </div>
+
+    </div>
+</section>
+{% endblock %}

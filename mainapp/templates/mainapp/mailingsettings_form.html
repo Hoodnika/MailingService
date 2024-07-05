@@ -1,0 +1,53 @@
+{% extends 'mainapp/base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-md-12 py-4">
+            <form class="row" method="post" enctype="multipart/form-data">
+                <div class="col-6">
+                    {% if object %}
+                    <div class="card-header form-control text-center"><h3>Редактирование</h3></div>
+                    {% else %}
+                    <div class="card-header form-control text-center"><h3>Создать новую рассылку</h3></div>
+                    {% endif %}
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <script src="{% static 'js/iquery.min.js' %}"></script>
+                            {{ form.media }}
+
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            {% if object %}
+                            Сохранить
+                            {% else %}
+                            Создать
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card-header form-control text-center"><h3>Действия</h3></div>
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="{% url 'mainapp:message_create' %}" class="btn btn-sm btn-outline-primary">Создать
+                                        письмо</a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="{% url 'clientapp:client_create' %}" class="btn btn-sm btn-outline-primary">Создать
+                                        клиента</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

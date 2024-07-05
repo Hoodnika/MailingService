@@ -1,0 +1,28 @@
+{% extends 'mainapp/base.html'%}
+{% block content %}
+
+
+
+<h2>{{ just_current_datetime|date:"Y-m-d" }}</h2>
+<h2>{{ TIME_ZONE }}</h2>
+<h1>{{ manager_text }}</h1>
+
+{% for object in mailing_list %}
+
+    <h1>new_object</h1>
+    <h2>{{ object.first_sending|date:"Y-m-d" }}</h2>
+    <h2>{{ object.last_sending }}</h2>
+
+        {% if just_current_datetime|date:"Y-m-d" > object.first_sending %}
+
+            <h2>Рассылка активна</h2>
+
+        {% elif just_current_datetime|date:"Y-m-d" < object.first_sending %}
+
+            <h2>Рассылка остановлена</h2>
+
+        {% endif %}
+{% endfor %}
+
+
+{% endblock %}
